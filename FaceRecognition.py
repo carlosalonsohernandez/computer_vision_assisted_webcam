@@ -1,7 +1,5 @@
 import cv2
 
-
-
 def return_active_frame():
     # Load face cascade classifiers
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -33,8 +31,11 @@ def return_active_frame():
         # Display the frame
         if cam1_eyes_detected:
             cv2.imshow('Webcam', cam1_frame)
-        if cam2_eyes_detected:
+        elif cam2_eyes_detected:
             cv2.imshow('Webcam', cam2_frame)
+        else:
+            # default, avoids freezes on lack of eyes
+            cv2.imshow('Webcam', cam1_frame)
 
         # Exit the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
