@@ -1,13 +1,16 @@
-import colorsys
+import face_recognition
+import os, sys
+import cv2
 import numpy as np
-import pyvirtualcam
+import math
 
-with pyvirtualcam.Camera(width=1920, height=1080, fps=60) as cam:
-    print(f'Using virtual camera: {cam.device}')
-    frame = np.zeros((cam.height, cam.width, 3), np.uint8)  # RGB
-    while True:
-        h, s, v = (cam.frames_sent % 100) / 100, 1.0, 1.0
-        r, g, b = colorsys.hsv_to_rgb(h, s, v)
-        frame[:] = (r * 255, g * 255, b * 255)
-        cam.send(frame)
-        cam.sleep_until_next_frame()
+
+def face_confidence(face_dist, face_match_threshold=0.6):
+    range = (1.0 - face_match_threshold)
+    lin_val = (1.0 - face_dist) / (range * 2.0)
+
+    if face_dist > face_match_threshold:
+        return str(round(lin_val * 100, 2)) + '%'
+    else:
+        value = (lin_val + ((1.0 - lin_val) * math.pow((lin_val - 0.5) * 2, 0.2)))
+        return str(round(value, 2)) + '%'
